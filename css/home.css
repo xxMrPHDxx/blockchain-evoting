@@ -1,0 +1,23 @@
+#sidebar {
+	background-color: #000c66;
+	display: grid;
+	grid-auto-flow: row;
+	grid-auto-rows: 3.6rem;
+	grid-gap: 6px;
+}
+#sidebar > a {
+	text-transform: capitalize;
+	font-weight: 800;
+	background-color: #7ec8e3;
+	color: black;
+	text-decoration: none;
+	line-height: 2.4rem;
+	padding: 10px 18px;
+}
+#sidebar > a.selected {
+	background-color: #5ca6c1;
+}
+#sidebar > a:hover {
+	background-color: #aaf82a;
+	color: #c6c6c6;
+}

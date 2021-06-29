@@ -1,0 +1,19 @@
+#candidates {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+	grid-gap: 10px;
+}
+img {
+	border: 5px solid black;
+	border-radius: 10%;
+}
+.candidate {
+	padding: 10px;
+	width: 200px;
+	border: 2px solid black;
+	display: grid;
+	align-items: center;
+	justify-items: center;
+	grid-auto-flow: column;
+	grid-template-rows: 1fr 40px;
+}

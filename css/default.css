@@ -1,0 +1,14 @@
+* { margin: 0; padding: 0; }
+body.main {
+	min-height: 100vh;
+	display: grid;
+	grid-template-areas: "header" "content";
+	grid-template-rows: 80px auto;
+}
+body.main.admin {
+	grid-template-areas: "header header" "sidebar content";
+	grid-template-columns: 260px auto;
+}
+body.main > #topnav { grid-area: header; }
+body.main > #sidebar { grid-area: sidebar; }
+body.main > #content { grid-area: content; }
