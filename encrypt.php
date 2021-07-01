@@ -1,36 +1,49 @@
 <?php
 class KeyPair {
-	private $pkey;
+	private $pri_key;
+	private $pub_key;
 	private $cipher;
 	private $iv;
-	public function __construct($key=null, $cipher='aes-256-ctr', $iv=null){
-		$this->pkey   = $key == null ? openssl_pkey_new() : openssl_get_publickey($key);
-		$this->cipher = $cipher;
-		$this->iv     = $iv == null ? openssl_random_pseudo_bytes(16) : $iv;
+	public function __construct($pri=null, $pub=null, $cipher='aes-256-ctr', $iv=null){
+		$pair = openssl_pkey_new();
+		if($pri == null) openssl_pkey_export($pair, $this->pri_key);
+		else $this->pri_key = openssl_get_privatekey($pri);
+		$this->pub_key = $pub == null ? openssl_pkey_get_details($pair)['key'] : openssl_get_publickey($pub);
+		$this->cipher  = $cipher;
+		$this->iv      = $iv == null ? openssl_random_pseudo_bytes(16) : $iv;
 	}
-	public function __destruct(){
-		openssl_free_key($this->pkey);
-	}
-	public function get_key(){
-		$key = openssl_get_privatekey($this->pkey);
-		return openssl_pkey_get_details($key)['key'];
-	}
+	public function get_private(){ return $this->pri_key; }
+	public function get_public(){ return $this->pub_key; }
 	public function get_cipher(){ return $this->cipher; }
 	public function get_iv(){ return $this->iv; }
 	public function encrypt($unencrypted){
-		return openssl_encrypt(
+		$encrypted = openssl_encrypt(
 			$unencrypted,
 			$this->cipher,
-			$this->get_key(),
+			$this->get_private(),
+			OPENSSL_ZERO_PADDING,
+			$this->iv
+		);
+		return openssl_encrypt(
+			$encrypted,
+			$this->cipher,
+			$this->get_public(),
 			OPENSSL_ZERO_PADDING,
 			$this->iv
 		);
 	}
 	public function decrypt($encrypted){
-		return openssl_decrypt(
+		$decrypted = openssl_decrypt(
 			$encrypted,
 			$this->cipher,
-			$this->get_key(),
+			$this->get_public(),
+			OPENSSL_ZERO_PADDING,
+			$this->iv
+		);
+		return openssl_decrypt(
+			$decrypted,
+			$this->cipher,
+			$this->get_private(),
 			OPENSSL_ZERO_PADDING,
 			$this->iv
 		);

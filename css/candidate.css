@@ -1,13 +1,13 @@
-#candidates {
+#positions .position h3 {
+	text-align: center;
+}
+#positions .position #candidates {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+	justify-items: center;
+	grid-template-columns: repeat(auto-fill, minmax(224px, 1fr));
 	grid-gap: 10px;
 }
-img {
-	border: 5px solid black;
-	border-radius: 10%;
-}
-.candidate {
+#candidates .candidate {
 	padding: 10px;
 	width: 200px;
 	border: 2px solid black;
@@ -16,4 +16,9 @@ img {
 	justify-items: center;
 	grid-auto-flow: column;
 	grid-template-rows: 1fr 40px;
+}
+.candidate img {
+	width: 166px;
+	border: 5px solid black;
+	border-radius: 10%;
 }

@@ -11,4 +11,4 @@ body.main.admin {
 }
 body.main > #topnav { grid-area: header; }
 body.main > #sidebar { grid-area: sidebar; }
-body.main > #content { grid-area: content; }
+body.main > #content { grid-area: content; padding: 15px; }

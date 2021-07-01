@@ -7,16 +7,22 @@ include_once 'encrypt.php';
 include_once 'db_connect.php';
 $check = $conn->query("SELECT * FROM voters WHERE id=".$_SESSION['id']);
 $check = $check->fetch_assoc();
-if($check['public_key'] == null){
+if(!isset($check['public_key']) ||
+	 !isset($check['private_key']) ||
+	 !isset($check['cipher']) ||
+	 !isset($check['iv'])){
 	$key = new KeyPair();
 	$conn->query(
-		"UPDATE voters SET public_key='".$key->get_key().
-		"', cipher='".$key->get_cipher().
-		"', iv='".$key->get_iv().
-		"' WHERE id=".$_SESSION['id']
+		"UPDATE voters SET ".
+		"private_key='".$key->get_private()."', ".
+		"public_key='".$key->get_public()."', ".
+		"cipher='".$key->get_cipher()."', ".
+		"iv='".$key->get_iv()."' ".
+		"WHERE id=".$_SESSION['id']
 	);
 }else{
 	$key = new KeyPair(
+		$check['private_key'],
 		$check['public_key'],
 		$check['cipher'],
 		$check['iv']
@@ -26,9 +32,10 @@ if($check['public_key'] == null){
 // Determine the content page to show.
 // If it doesn't exist, go to index page
 if(!isset($_GET['page'])) $_GET['page'] = 'index';
-$page = $_GET['page'];
+$page = $_SESSION['is_admin'] ? $_GET['page'] : 'voting';
 if(!file_exists("pages/$page.php")){
-	if($page == 'index') die('404 Not Found: Failed to load index page!');
+	if($page == 'index' || $page == 'voting')
+		die("404 Not Found: Failed to load $page page!");
 	header('Location: home.php');
 }
 ?>

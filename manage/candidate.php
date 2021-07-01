@@ -63,22 +63,36 @@ if($function == 'add'){
 <?php 
 }else{
 ?>
-<div id="candidates">
+<div id="positions">
 <?php
-	$candidates = $conn->query(
-		"SELECT * FROM candidates WHERE election_id=$election"
+	$settings = $conn->query(
+		"SELECT position_id, p.name AS position FROM election_settings s ".
+		"JOIN positions p ON s.position_id=p.id ".
+		"WHERE election_id=$election"
 	);
-	if($candidates && $candidates->num_rows > 0){
-		while($row = $candidates->fetch_assoc()){
-			for($i=0; $i<4; $i++){
+	while($settings && ($setting = $settings->fetch_assoc())){
+		$candidates = $conn->query(
+			"SELECT * FROM candidates WHERE position_id=".$setting['position_id'].
+			" AND election_id=$election"
+		);
+		if(!$candidates || $candidates->num_rows == 0) continue;
 ?>
-		<div class="candidate">
-			<img src="data:image/*;base64,<?php echo $row['image'] ?>"></img>
-			<span class="name"><?php echo $row['name'] ?></span>
-		</div>
+	<div class="position">
+		<h3><?php echo $setting['position'] ?></h3>
+		<div id="candidates">
 <?php
-			}
+		while($row = $candidates->fetch_assoc()){
+?>
+			<div class="candidate">
+				<img src="data:image/*;base64,<?php echo $row['image'] ?>"></img>
+				<span class="name"><?php echo $row['name'] ?></span>
+			</div>
+<?php
 		}
+?>
+		</div>
+	</div>
+<?php
 	}
 ?>
 </div>

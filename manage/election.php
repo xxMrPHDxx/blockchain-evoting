@@ -35,6 +35,9 @@ if($function == 'add'){
 		<a href="?page=manage&type=candidate&election=<?php echo $row['id'] ?>">
 			<button>Candidates</button>
 		</a>
+		<a href="?page=manage&type=setting&election=<?php echo $row['id'] ?>">
+			<button>Settings</button>
+		</a>
 	</div>
 <?php
 	}
