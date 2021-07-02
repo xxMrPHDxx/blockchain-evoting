@@ -72,7 +72,7 @@ while($position = $positions->fetch_assoc()){
 <?php if($has_voted){ ?>
 </div>
 <?php }else{ ?>
-	<input type="Submit" value="Confirm Vote">
+	<input type="submit" id="confirm" value="Confirm Vote">
 </form>
 <?php } ?>
 <?php if(!$has_voted){ ?>
@@ -111,7 +111,8 @@ $('#vote').submit(e=>{
 	.then(success=>{
 		if(success){
 			alert('Vote has been submitted successfully!');
-			location.reload();
+			$('#confirm').remove();
+			setTimeout(()=>location.reload(), 30000);
 		}
 	})
 	.catch(()=>alert('Error: Failed to submit vote!'));
