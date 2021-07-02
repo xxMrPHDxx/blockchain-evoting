@@ -25,7 +25,8 @@ INSERT INTO voters (name, username, password, is_admin) VALUE (
 CREATE TABLE elections (
   id          BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   name        VARCHAR(200) NOT NULL,
-  due_date    DATE NOT NULL
+  due_date    DATE NOT NULL,
+	is_default  BOOLEAN DEFAULT FALSE
 );
 
 -- CREATE THE POSITIONS TABLE (Like President etc.)
@@ -62,7 +63,7 @@ CREATE TABLE votes (
   voter_id     BIGINT NOT NULL,
   candidate_id BIGINT NOT NULL,
 	election_id  BIGINT NOT NULL,
-	signature    VARCHAR(256) DEFAULT NULL,
+	signature    BLOB DEFAULT NULL,
   FOREIGN KEY (voter_id) REFERENCES voters(id),
   FOREIGN KEY (candidate_id) REFERENCES candidates(id),
   FOREIGN KEY (election_id) REFERENCES elections(id)
