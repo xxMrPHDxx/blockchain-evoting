@@ -24,5 +24,6 @@ if(isset($_POST['data'])){
 	// Send the encrypted data
 	$response['data'] = $keypair->encrypt($_POST['data']);
 }
+else $response['success'] = false;
 end:
 ?>

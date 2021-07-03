@@ -24,5 +24,6 @@ if(isset($_POST['data'])){
 	// Send the decrypted data
 	$response['data'] = $keypair->decrypt($_POST['data']);
 }
+else $response['success'] = false;
 end:
 ?>

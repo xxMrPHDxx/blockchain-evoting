@@ -25,6 +25,7 @@ elseif($votes && $votes->num_rows != $total_candidates)
 		"WHERE election_id=".$election['id']." AND voter_id=".$_SESSION['id']
 	);
 
+// Get the positions/ranks along with the target count information
 $positions = $conn->query(
 	"SELECT *, p.id AS position_id FROM election_settings s ".
 	"JOIN positions p ON s.position_id=p.id ".
@@ -104,18 +105,36 @@ $('#vote').submit(e=>{
 		}
 	});
 	Promise.all([...$('.candidates .candidate.selected')].map(e=>
-		fetch(`http://localhost:8000/vote?election=<?php echo $election['id'] ?>&voter=<?php echo $_SESSION['id'] ?>&candidate=${$(e).attr('data-id')}`)
+		fetch(`ajax.php?action=vote&candidate=${$(e).attr('data-id')}&election=<?php echo $election['id'] ?>`, {
+			method: 'POST',
+			headers: {
+				Authorization: btoa(`<?php echo $_SESSION['public_key'] ?>`)
+			},
+			body: (data=>{
+				data.append('candidate', $(e).attr('data-id'));
+				data.append('election', <?php echo $election['id'] ?>);
+				return data;
+			})(new FormData())
+		})
 		.then(res=>res.json())
 	))
-	.then(results=>results.length!==0&&results.reduce((a,b)=>a&&b.success, true))
-	.then(success=>{
-		if(success){
+	.then(results=>Promise.all(results.filter(({success})=>success).map(({vote_id})=>
+		fetch(`http://localhost:8000/vote?vote=${vote_id}&election=<?php echo $election['id'] ?>`, {
+			headers: {
+				Authorization: btoa(`<?php echo $_SESSION['public_key'] ?>`)
+			}
+		})
+		.then(res=>res.json())
+	)))
+	.then(results=>results.filter(({success})=>!success))
+	.then(errors=>{
+		if(errors.length === 0){
 			alert('Vote has been submitted successfully!');
 			$('#confirm').remove();
-			setTimeout(()=>location.reload(), 30000);
+			setTimeout(()=>location.reload(), 1500);
 		}
 	})
-	.catch(()=>alert('Error: Failed to submit vote!'));
+	.catch(e=>alert(`Error: Failed to submit vote! ${e}`));
 });
 </script>
 <?php } ?>
